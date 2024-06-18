@@ -1,0 +1,45 @@
+name: sampleprojectjahnavi/sample
+on:
+#   # The shortest interval you can run scheduled workflows is once every 5 minutes.
+#   period: '180'
+jobs:
+  Default-Stage-Build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - run: |-
+        ls -la
+        cd Sample
+        ls -la
+    - run: |-
+        cd Sample
+        dotnet test
+    - run: |-
+        cd Sample
+        dotnet restore
+    - run: |-
+        cd Sample
+        java -version
+        ls -la
+        echo " "
+        echo " "
+        echo "Starting SonarQube Scanner for .NET"
+        export PATH="$PATH:/root/.dotnet/tools"
+        dotnet sonarscanner begin /k:"SampleS" /d:sonar.host.url="http://4.240.83.214:9000/"  /d:sonar.token="squ_7f813b7c191a92f502c66f83cc2c6758fce67bd7"
+        echo "SonarQube Scanner for .NET started"
+        dotnet build
+        echo " "
+        echo " "
+        echo "Ending SonarQube Scanner for .NET"
+        java -version
+        export PATH="$PATH:/root/.dotnet/tools"
+        dotnet sonarscanner end /d:sonar.token="squ_7f813b7c191a92f502c66f83cc2c6758fce67bd7"
+        echo "SonarQube Scanner for .NET ended"
+      env:
+        JAVA_HOME: "/usr/lib/jvm/java-17-openjdk-amd64/"
+    - run: dotnet publish Sample/Sample.csproj -c Release -o ./Output
+    - uses: actions/upload-artifact@v4.1.0
+      with:
+        name: SAM-SAM_Artifact
+        path: "*"
+        if-no-files-found: error
