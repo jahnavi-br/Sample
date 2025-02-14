@@ -2,6 +2,7 @@ name: sampleprojectjahnavi/sample
 on:
 #   # The shortest interval you can run scheduled workflows is once every 5 minutes.
 #   period: '180'
+  push
 jobs:
   Default-Stage-Build:
     runs-on: ubuntu-latest
